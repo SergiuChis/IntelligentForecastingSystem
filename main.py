@@ -27,9 +27,7 @@ def gather_data(config_file):
 if __name__ == "__main__":
     config = json.load(open("Config/config.json", "r", encoding="utf-8"))
 
-    gather_data(config)
+    # gather_data(config)
 
-    # model_manager = ModelManager(RecurrentNN, config["Prediction model parameters"], config["Paths"])
-    # a = model_manager.train()
-
-    # group_images_with_panel_records("Saves/geosatellite/new_geosat_after_panels", "Saves/panels/current_dc.tsv", "Saves/panels/voltage_dc.tsv", "Saves/SQL_grouped/data_for_training.sqlite")  # noqa
+    model_manager = ModelManager(RecurrentNN, config["Prediction model parameters"], config["Paths"])
+    a = model_manager.train()

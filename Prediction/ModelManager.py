@@ -29,23 +29,6 @@ class ModelManager:
         self.criterion = self.__get_criterion(model_params["criterion"])
         self.optimizer = self.__get_optimizer(model_params["optimizer"])
 
-    # def train_step(self, input_tensor_sequence, expected_output_tensor):
-    #     hidden = self.model.initial_hidden()
-    #     for tensor in input_tensor_sequence:
-    #         output, hidden = self.model(tensor, hidden)
-    #     loss = self.criterion(output, expected_output_tensor.to(self.device, dtype=torch.float))  # noqa
-    #     self.optimizer.zero_grad()
-    #     loss.backward()
-    #     self.optimizer.step()
-    #     return output, loss.item()
-    #
-    # def train(self):
-    #     for i in range(self.num_epochs):
-    #         for sample in self.train_dataset:
-    #             output, loss = self.train_step(sample[0], sample[1])
-    #             print(output, sample[1])
-    #             print(f"loss: {loss}")
-
     def train(self):
         loss_list = []
         expected_list = []
@@ -54,7 +37,7 @@ class ModelManager:
             iteration_nr = 0
             for sample in self.train_dataset:
                 iteration_nr += 1
-                input_sequence = torch.tensor(np.array([sample[0]]), dtype=torch.float).to(self.device)
+                input_sequence = torch.tensor(np.array(sample[0]), dtype=torch.float).to(self.device)
                 output_expected = torch.tensor([[sample[1]]], dtype=torch.float).to(self.device)
 
                 output = self.model(input_sequence)
@@ -64,19 +47,22 @@ class ModelManager:
                 loss.backward()
                 self.optimizer.step()
 
-                # loss_list.append(loss.item())
-                # expected_list.append(output_expected[0][0].to("cpu").detach().numpy())
-                # result_list.append(output[0][0].to("cpu").detach().numpy())
+                expected = output_expected[0][0].to("cpu").detach().numpy()
+                predicted = output[0].to("cpu").detach().numpy()
+                loss_list.append(loss.item())
+                expected_list.append(expected)
+                result_list.append(predicted)
                 print(f"epoch: {i}, loss: {loss.item()}")
-                print(f"Expected: {output_expected[0][0]}, Result: {output[0][0]}")
+                print(f"Expected: {output_expected[0][0]}, Result: {output[0]}")
                 print("------------------------------------")
 
                 # if iteration_nr >= 300:
                 #     break
 
-        plt.plot(range(len(loss_list)), loss_list, color="red")
-        plt.plot(range(len(expected_list)), expected_list, color="blue")
-        plt.plot(range(len(result_list)), result_list, color="green")
+        fig, (ax1, ax2) = plt.subplots(2, 1)
+        ax1.plot(range(len(loss_list)), loss_list, color="red")
+        ax2.plot(range(len(expected_list)), expected_list, color="blue")
+        ax2.plot(range(len(result_list)), result_list, color="green")
         plt.show()
 
     @staticmethod
@@ -95,3 +81,14 @@ class ModelManager:
             return optim.Adadelta(self.model.parameters(), self.learning_rate)
         if optimizer == "AdamW":
             return optim.AdamW(self.model.parameters(), self.learning_rate)
+
+    @staticmethod
+    def __get_prediction_number(tensor):
+        return torch.argmax(tensor).item() + 1
+
+
+# TODO testeaza si alte optimizers
+# TODO mecanism de early stopping
+# TODO prezic una din cele 4 valori
+# TODO mai multe imagini in secventa
+# TODO impartim sunny vallue in 4 clustere

@@ -1,17 +1,12 @@
 {
     "Last updates": {
-        "locationforecast": "Fri, 18 Feb 2022 14:06:36 GMT",
-        "subjectiveforecast_prognose_map": "Thu, 04 Nov 2021 10:45:02 GMT",
-        "subjectiveforecast_analyse_map": "Thu, 04 Nov 2021 06:55:02 GMT",
-        "geosatellite": "Sat, 07 May 2022 15:00:12 GMT"
+        "geosatellite": "Wed, 11 May 2022 17:30:12 GMT"
     },
     "Cluj coordinates": {
         "lat": "46.7666",
         "lon": "23.6"
     },
     "URLs": {
-        "locationforecast": "https://api.met.no/weatherapi/locationforecast/2.0/complete",
-        "subjectiveforecast": "https://api.met.no/weatherapi/subjectiveforecast/1.0/",
         "geosatellite": "https://api.met.no/weatherapi/geosatellite/1.4/",
         "panels": "https://hosting.systemlinkcloud.io/webapps/05f4f4d8-d1e4-466e-aa23-13331dc3a4e7/content/ApplicationFiles_64/index.html"
     },
@@ -24,11 +19,11 @@
         "num_layers": 1,
         "output_size": 1,
         "sequence_length": 9,
-        "learning_rate": 0.05,
+        "learning_rate": 0.0005,
         "batch_size": 5,
         "num_epochs": 1,
         "criterion": "MeanSquaredErrorLoss",
-        "optimizer": "Adam"
+        "optimizer": "Adadelta"
     },
     "Paths": {
         "geosatellite images": "Saves/geosatellite/grayscale_images",

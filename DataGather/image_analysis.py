@@ -47,8 +47,10 @@ if __name__ == "__main__":
     conn = sqlite3.connect("../Saves/SQL_grouped/data_for_training.sqlite")
     for image_file_name in os.listdir("../Saves/geosatellite/new_geosat_after_panels"):
         if image_file_name.split(".")[-1] == "png":
-            image = Image.open("Saves/geosatellite/new_geosat_after_panels/" + image_file_name)
+            image = Image.open("../Saves/geosatellite/new_geosat_after_panels/Europe-IR-20220508173000.png") # + image_file_name)
             image = get_only_clouds(np.array(image.convert("L")))  # noqa
+            Image.fromarray(image, mode="L").show()
+            break
             a = how_sunny_it_is_over_cluj(image)
             conn.execute("update images set sunny_value=? where name=?", (a, image_file_name))
             print(i)
