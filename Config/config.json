@@ -1,6 +1,6 @@
 {
     "Last updates": {
-        "geosatellite": "Wed, 11 May 2022 17:30:12 GMT"
+        "geosatellite": "Sun, 29 May 2022 16:15:05 GMT"
     },
     "Cluj coordinates": {
         "lat": "46.7666",
@@ -21,15 +21,18 @@
         "sequence_length": 9,
         "learning_rate": 0.0005,
         "batch_size": 5,
-        "num_epochs": 1,
+        "num_epochs": 5,
         "criterion": "MeanSquaredErrorLoss",
         "optimizer": "Adadelta"
     },
+    "SqliteBrowser_BinaryName": "sqlitebrowser",
     "Paths": {
         "geosatellite images": "Saves/geosatellite/grayscale_images",
         "current values": "Saves/panels/current_dc.tsv",
         "voltage values": "Saves/panels/voltage_dc.tsv",
-        "database": "Saves/SQL_grouped/data_for_training.sqlite"
+        "database": "Saves/SQL_grouped/data_for_training.sqlite",
+        "GUI_icons": "UserInterface/Images/",
+        "trained_model": "Saves/TrainedModels/RNN.pt"
     },
     "Image crop": {
         "Cluj": {

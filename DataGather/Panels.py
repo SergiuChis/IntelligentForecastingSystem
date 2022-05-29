@@ -8,6 +8,7 @@ class Panels:
     def __init__(self, config):
         self.config = config
         self.driver = webdriver.Firefox()
+        self.driver.minimize_window()
         self.driver.get(config["URLs"]["panels"])
         self.current_dc = self.driver.find_elements(by="xpath", value="/html/body/div[3]/ni-front-panel/jqx-numeric-text-box[1]")  # noqa
         self.voltage_dc = self.driver.find_elements(by="xpath", value="/html/body/div[3]/ni-front-panel/jqx-numeric-text-box[2]")  # noqa
@@ -35,3 +36,6 @@ class Panels:
 
         current_dc_file.close()
         voltage_dc_file.close()
+
+    def close_browser(self):
+        self.driver.quit()

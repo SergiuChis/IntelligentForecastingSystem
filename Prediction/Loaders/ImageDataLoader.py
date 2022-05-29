@@ -1,9 +1,5 @@
 import os
-from torchvision import transforms
 from PIL import Image
-import random
-import torch
-from DataGather.image_analysis import get_only_clouds
 import numpy as np
 import sqlite3
 import random
@@ -42,6 +38,27 @@ class ImageDataLoader:
             return self.__to_tensor(self.images[self.day - 1])
         raise StopIteration
 
+    def get_dataset_by_date(self, date):
+        year = date.tm_year
+        month = date.tm_mon
+        day = date.tm_mday
+        today_as_string = str(year) + "-" + str(month).zfill(2) + "-" + str(day).zfill(2)
+
+        conn = sqlite3.connect("Saves/SQL_grouped/data_for_training.sqlite")
+        print("select name from images where date(date)='" + today_as_string + "'")
+        today_images = conn.execute("select name from images where date(date)='" + today_as_string + "'")
+
+        sequence = []
+        for image in today_images:
+            img = Image.open(self.image_folder_path + "/" + image[0])
+            gray_scale_img = np.array(img).flatten()
+            sequence.append(gray_scale_img)
+
+        if len(sequence) == 0:
+            raise ValueError("No images downloaded today")
+
+        return sequence
+
     def __to_tensor(self, chunk):
         result = ([],)
         for element in chunk[0]:
@@ -68,7 +85,6 @@ class ImageDataLoader:
                 days_dict[date] = [image]
         result = []
         keys = list(days_dict.keys())
-        print(keys)
         for i in range(len(keys) - 1):
             for j in range(i + 1, len(keys)):
                 curr_date = datetime.strptime(keys[i], "%Y%m%d")

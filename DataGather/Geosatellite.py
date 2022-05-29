@@ -4,7 +4,7 @@ import sqlite3
 from PIL import Image
 import numpy as np
 from utilities import convert_img_to_binary_data, str_to_datetime
-from DataGather.image_analysis import how_sunny_it_is_over_cluj, get_only_clouds
+from ImageAnalysis.ImageAnalysis import ImageAnalysis
 
 
 class Geosatellite:
@@ -36,8 +36,8 @@ class Geosatellite:
             timestamp = str_to_datetime(image_name.split("-")[-1].split(".")[0])
             blob_picture = convert_img_to_binary_data("Saves/geosatellite/new_geosat_after_panels/" + image_name + ".png")
             image = Image.open("Saves/geosatellite/new_geosat_after_panels/" + image_name + ".png")
-            image = get_only_clouds(np.array(image.convert("L")))
-            sunny_value = how_sunny_it_is_over_cluj(image, self.config["Image crop"]["Cluj"])
+            image = ImageAnalysis.get_only_clouds(np.array(image.convert("L")))
+            sunny_value = ImageAnalysis.how_sunny_it_is_over_cluj(image, self.config["Image crop"]["Cluj"])
             print("Inserting into images values:", image_name + ".png", "blob", timestamp, sunny_value)
             cursor = self.db_conn.execute("insert into images (name, photo, date, sunny_value) values (?, ?, ?, ?)", (image_name + ".png", blob_picture, timestamp, sunny_value))
             self.db_conn.commit()

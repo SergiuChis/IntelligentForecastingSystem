@@ -4,9 +4,9 @@ from torch import nn
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from PIL import Image
+from time import gmtime
 
 from Prediction.Loaders.ImageDataLoader import *
-from DataGather.image_analysis import show_array_image
 
 
 class ModelManager:
@@ -59,11 +59,25 @@ class ModelManager:
                 # if iteration_nr >= 300:
                 #     break
 
+        torch.save(self.model.state_dict(), self.data_paths["trained_model"])
         fig, (ax1, ax2) = plt.subplots(2, 1)
         ax1.plot(range(len(loss_list)), loss_list, color="red")
         ax2.plot(range(len(expected_list)), expected_list, color="blue")
         ax2.plot(range(len(result_list)), result_list, color="green")
         plt.show()
+
+    def load_saved_model(self, path):
+        self.model.load_state_dict(torch.load(path, map_location=torch.device("cpu")))
+        self.model.eval()
+
+    def predict(self):
+        current_date = gmtime()
+        sequence = self.train_dataset.get_dataset_by_date(current_date)
+        # print(sequence)
+        input_sequence = torch.tensor(np.array(sequence), dtype=torch.float).to(self.device)
+        # print(input_sequence.shape)
+        output = self.model(input_sequence)
+        return output
 
     @staticmethod
     def __get_criterion(criterion: str):

@@ -1,7 +1,6 @@
 from PIL import Image
 import os
 import json
-from DataGather.image_analysis import get_only_clouds
 
 config = json.load(open("Config/config.json", "r", encoding="utf-8"))
 crops = config["Image crop"]["Romania"]
