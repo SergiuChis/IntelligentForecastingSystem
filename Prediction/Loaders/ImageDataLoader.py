@@ -59,6 +59,19 @@ class ImageDataLoader:
 
         return sequence
 
+    # def get_testing_dataset(self):
+    #     conn = sqlite3.connect("Saves/SQL_grouped/data_for_training.sqlite")
+    #     test_data = conn.execute("select name from images where date > date(\'2022-05-21\')")
+    #     split_by_days = self.__split_by_days(test_data)
+    #     sequence = []
+    #     for day in split_by_days:
+    #         sequence.append([])
+    #         for image in day:
+    #             img = Image.open(self.image_folder_path + "/" + image[0])
+    #             gray_scale_img = np.array(img).flatten()
+    #             sequence[-1].append(gray_scale_img)
+    #     return sequence
+
     def __to_tensor(self, chunk):
         result = ([],)
         for element in chunk[0]:

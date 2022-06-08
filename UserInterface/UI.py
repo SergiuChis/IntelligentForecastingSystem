@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from multiprocessing import Process
+import os
 
 from Controller.Controller import Controller
 
@@ -9,6 +11,9 @@ class UI_Tkinter:
     def __init__(self, config):
         self.config = config
         self.controller = Controller(config)
+        self.recommendations_window_process = Process(target=self._open_recommendations_window)
+        self.cloud_prediction = self._get_prediction()
+        self.power_prediction = self._get_power_output()
 
     def run(self):
         self._init_window()
@@ -58,14 +63,27 @@ class UI_Tkinter:
         self.cloudy_label = ttk.Label(self.mainframe, text="Cloud percentage:", padding="90 3 3 3")
         self.cloudy_label.grid(column=3, row=1, sticky=W)
 
-        self.actual_prediction_label = ttk.Label(self.mainframe, text=self._get_prediction())  # , padding="3 3 3 3")
+        self.actual_prediction_label = ttk.Label(self.mainframe, text=str(self.cloud_prediction) + " (" + self._get_category_from_prediction() + ")")  # self._get_prediction())  # , padding="3 3 3 3")
         self.actual_prediction_label.grid(column=4, row=1, sticky=W)
 
         self.power_output_label = ttk.Label(self.mainframe, text="Power output:", padding="90 3 3 3")
         self.power_output_label.grid(column=3, row=2, sticky=W)
 
-        self.actual_power_output = ttk.Label(self.mainframe, text=self._get_power_output())
+        self.actual_power_output = ttk.Label(self.mainframe, text=str(self.power_prediction))  # self._get_power_output())
         self.actual_power_output.grid(column=4, row=2, sticky=W)
+
+        self.recommendations_window_button = ttk.Button(self.mainframe, text="Recommendations", padding="3 3 12 12", command=self.open_recommendations_window)
+        self.recommendations_window_button.grid(column=0, row=3)
+
+    def _open_recommendations_window(self):
+        os.system("python3 Recommendations/Recommendations_UI.py " + str(self.power_prediction.strip("W")))
+
+    def open_recommendations_window(self):
+        try:
+            self.recommendations_window_process.start()
+        except AssertionError:
+            self.recommendations_window_process = Process(target=self._open_recommendations_window)
+            self.recommendations_window_process.start()
 
     def _download_button_callback(self):
         if self.download_button.config("text")[-1] == "Start downloading images":
@@ -95,3 +113,18 @@ class UI_Tkinter:
 
     def _refresh(self):
         self.actual_prediction_label.config(text=self._get_prediction())
+        self.actual_power_output.config(text=self._get_power_output())
+
+    def _get_category_from_prediction(self):
+        try:
+            cp = int(self.cloud_prediction.strip("%"))
+            if cp < 25:
+                return "Very sunny"
+            elif 25 <= cp < 50:
+                return "Partially sunny"
+            elif 50 <= cp < 75:
+                return "Partially cloudy"
+            else:
+                return "Cloudy"
+        except ValueError:
+            return ""

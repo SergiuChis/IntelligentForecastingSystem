@@ -10,6 +10,7 @@ from DataGather.Geosatellite import Geosatellite
 from Prediction.ModelManager import ModelManager
 from Prediction.Models.RecurrentNN import RecurrentNN
 from ImageAnalysis.ImageAnalysis import ImageAnalysis
+from Recommendations.RecommendationsRepo import RecommendationsRepo
 
 
 class Controller:
@@ -18,6 +19,7 @@ class Controller:
         self.download_process = Process(target=self._gather_data_process)
         self.db_browser_process = Process(target=self._db_browser_process)
         self.prediction_model_manager = ModelManager(RecurrentNN, config["Prediction model parameters"], config["Paths"])
+        self.recommendations_repo = RecommendationsRepo(config)
 
     def start_download_data(self):
         print("Starting download...")
@@ -73,6 +75,11 @@ class Controller:
             ImageAnalysis.process_images_for_training()
             return self.prediction_model_manager.predict()[0].item()
 
+    def test_model(self):
+        self.prediction_model_manager.load_saved_model(self.config["Paths"]["trained_model"])
+        return self.prediction_model_manager.test()
+
+
     def get_power_output_based_on_prediction(self, prediction):
         conn = sqlite3.connect(self.config["Paths"]["database"])
         closest_image_sunny_value_cursor = conn.execute("select id from images order by ABS(? - sunny_value) limit 1", (prediction,))
@@ -93,3 +100,9 @@ class Controller:
         conn.close()
 
         return (sum(current_list)/len(current_list)) * (sum(voltage_list)/len(voltage_list))
+
+    def get_activities_for_specified_power(self, power):
+        return self.recommendations_repo.get_activities_for_specified_power(power)
+
+    def insert_activity(self, activity, power_needed):
+        self.recommendations_repo.insert_activity(activity, power_needed)

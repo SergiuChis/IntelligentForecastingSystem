@@ -1,6 +1,6 @@
 {
     "Last updates": {
-        "geosatellite": "Sun, 29 May 2022 16:15:05 GMT"
+        "geosatellite": "Sat, 04 Jun 2022 08:00:00 GMT"
     },
     "Cluj coordinates": {
         "lat": "46.7666",
@@ -32,7 +32,8 @@
         "voltage values": "Saves/panels/voltage_dc.tsv",
         "database": "Saves/SQL_grouped/data_for_training.sqlite",
         "GUI_icons": "UserInterface/Images/",
-        "trained_model": "Saves/TrainedModels/RNN.pt"
+        "trained_model": "Saves/TrainedModels/RNN.pt",
+        "recommendations_database": "Recommendations/recommendations.sqlite"
     },
     "Image crop": {
         "Cluj": {

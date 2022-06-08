@@ -3,6 +3,7 @@ import json
 from UserInterface.UI import UI_Tkinter
 from Prediction.ModelManager import ModelManager
 from Prediction.Models.RecurrentNN import RecurrentNN
+from Controller.Controller import Controller
 
 
 if __name__ == "__main__":
@@ -10,6 +11,3 @@ if __name__ == "__main__":
 
     ui = UI_Tkinter(config)
     ui.run()
-
-    # a = ModelManager(RecurrentNN, config["Prediction model parameters"], config["Paths"])
-    # a.train()

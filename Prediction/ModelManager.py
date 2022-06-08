@@ -79,6 +79,20 @@ class ModelManager:
         output = self.model(input_sequence)
         return output
 
+    def test(self):
+        deviation_list = []
+        for sample in self.train_dataset:
+            input_sequence = torch.tensor(np.array(sample[0]), dtype=torch.float).to(self.device)
+            output_expected = torch.tensor([[sample[1]]], dtype=torch.float).to(self.device)
+
+            output = self.model(input_sequence)
+
+            expected = output_expected[0][0].to("cpu").detach().numpy()
+            predicted = output[0].to("cpu").detach().numpy()
+
+            deviation_list.append(abs(expected - predicted))
+        return mean(deviation_list)
+
     @staticmethod
     def __get_criterion(criterion: str):
         if criterion == "CrossEntropyLoss":
